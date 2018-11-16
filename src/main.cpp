@@ -1,4 +1,5 @@
 #include "select.h"
+#include "hirosolution.h"
 
 #include <ctime>
 #include <cstdlib>
@@ -24,26 +25,7 @@ int main (int argc, char* argv[])
 	sel.set_budget(atoi(argv[6]));
 	
 	double start = clock();
-	if (para == 0)
-		sel.generate_rand(n,p,N);
-	else if (para == 1)
-		sel.generate_hard(n,p,N);
-	else if (para == 2)
-		sel.generate_hard_lazy(n,p,N);
-	else if (para == 3)
-		sel.generate_midpoint(n,p,N);
-	else if (para == 4)
-		sel.generate_midpointlp(n,p,N);
-	else if (para == 5)
-		sel.generate_hard_alt(n,p,N);
-	else if (para == 6)
-		sel.generate_normal(n,p,N);	
-	else if (para == 7)
-		sel.generate_hard_alternateheuristic(n,p,N);			
-	else if (para == 8)
-		sel.generate_hard_LDR(n,p,N);
-   else if (para == 9)
-      sel.generate_hard(n,p,N,false);
+   sel.generate_hard_instance(para, n, p, N);
 		
 	cout<<"ALGTIME;"<<(clock()-start)/CLOCKS_PER_SEC<<"\n";
 	
@@ -55,11 +37,11 @@ int main (int argc, char* argv[])
 	//sel.print();
 		
 	start = clock();
-	Solution sol = sel.solve_ip();
+	HIROsolution sol = sel.solve_ip();
 	double soltime = (clock()-start)/CLOCKS_PER_SEC;
 	cout<<"TIME;"<<soltime<<"\n";
-	cout<<"NODES;"<<sol.nodes<<"\n";
-	cout<<"OBJ;"<<sol.ub<<"\n";
+	cout<<"NODES;"<<sol.get_nodes()<<"\n";
+	cout<<"OBJ;"<<sol.get_upper_bound()<<"\n";
 	
 	
 	vector<vector<double> > c = sel.get_c();

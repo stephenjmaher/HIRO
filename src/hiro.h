@@ -44,11 +44,15 @@ class HIRO
          HIROALGTYPE_ALT         = 6,
          HIROALGTYPE_ALTERNATE   = 7,
          HIROALGTYPE_LDR         = 8,
-         HIROALGTYPE_COLGEN      = 9
+         HIROALGTYPE_COLGEN      = 9,
+         HIROALGTYPE_NUMTYPE     = 10
       } algType;
 
       // generates a hard instance given the input parameters
       void generate_hard_instance(algType _type, int _n, int _p, int _N);
+
+      // returns the cost vector defining a hard instance
+		std::vector<std::vector<double> > get_c();
 
 	private:
       /// functions for generating random instances.
@@ -80,11 +84,13 @@ class HIRO
       // hard instances generated using the LP of the midpoint integer program
 		void generate_midpointlp(int _n, int _p, int _N);
 
-		std::vector<std::vector<double> > get_c();
 		void gen_U();
 		void set_problem(int _n, int _p, int _N, std::vector<std::vector<double> > _c);
 
 		void print();
+
+		int scenbudget;
+      double timelimit;
 
 		int n,p;
 		int N;
@@ -99,7 +105,6 @@ class HIRO
 
 		double solve_master(bool relax=false);
 		double solve_master_decomp(double lowerbound, bool relax=false);
-      double solve_decomp_sub();
 		double solve_master_alt();
 		double solve_master_alternateheuristic();
 		double solve_midlp_it();
@@ -116,8 +121,6 @@ class HIRO
          std::vector<IloRange> costcons, std::vector<IloRange> convexcons,
          std::vector<std::vector<std::vector<IloRange> > > scencons,
          std::vector<std::vector<std::vector<double> > >& columns, std::vector<int>& ncolumns, double lowerbound);
-
-		int scenbudget;
 };
 
 #endif
