@@ -25,38 +25,38 @@ namespace hiro
    //HIROsolution::HIROsolution(const HIROsolution& rhs)
 
    // sets the values of the solution x
-   void HIROsolution::setSolution(std:vector<double> x)
+   void HIROsolution::set_solution(std:vector<double> x)
    {
       _x = x;
    }
 
    // sets the upper bound
-   void HIROsolution::setUpperBound(double ub)
+   void HIROsolution::set_upper_bound(double ub)
    {
       _ub = ub;
    }
 
    // sets the number of nodes processed
-   void HIROsolution::setNodes(int nodes)
+   void HIROsolution::set_nodes(int nodes)
    {
       assert(nodes >= 0);
       _nodes = nodes;
    }
 
    // gets the values of the solution x
-   std::vector<double> HIROsolution::getSolution()
+   std::vector<double> HIROsolution::get_solution()
    {
       return _x;
    }
 
    // gets the upper bound
-   double HIROsolution::setUpperBound()
+   double HIROsolution::get_upper_bound()
    {
       return _ub
    }
 
    // gets the number of nodes processed
-   int HIROsolution::setNodes()
+   int HIROsolution::get_nodes()
    {
       return _nodes;
    }

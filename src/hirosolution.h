@@ -21,22 +21,22 @@ class HIROsolution
    virtual ~HIROsolution();
 
    // sets the values of the solution x
-   void setSolution(std:vector<double> x);
+   void set_solution(std:vector<double> x);
 
    // sets the upper bound
-   void setUpperBound(double ub);
+   void set_upper_bound(double ub);
 
    // sets the number of nodes processed
-   void setNodes(int nodes);
+   void set_nodes(int nodes);
 
    // gets the values of the solution x
-   std::vector<double> getSolution();
+   std::vector<double> get_solution();
 
    // gets the upper bound
-   double setUpperBound();
+   double get_upper_bound();
 
    // gets the number of nodes processed
-   int setNodes();
+   int get_nodes();
 
    private:
       std::vector<double> _x;
