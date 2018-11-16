@@ -1,42 +1,56 @@
-#ifndef _H_SELECT_H
-#define _H_SELECT_H
+#ifndef _H_HIRO_H
+#define _H_HIRO_H
 
 #include <vector>
 #include "ilcplex/ilocplex.h"
+#include "hirosolution.h"
 
-enum HIRO_HardAlgType
-{
-   RANDOM      = 0,
-   NORMAL      = 1
-   ITERATIVE   = 2,
-   LAZY        = 3,
-   MIDPOINT    = 4,
-   MIDPOINTLP  = 5,
-   ALT         = 6,
-   ALTERNATE   = 7,
-   LDR         = 8,
-   COLGEN      = 9
-};
-typedef enum HIRO_AlgType HIRO_ALGTYPE;
-
-struct Solution
-{
-	std::vector<double> x;
-	double ub;
-	int nodes;
-};
-
-class Select
+class HIRO
 {
 	public:
+      // default constructor
+      HIRO();
+
+      // default constructor with parameters
+      HIRO(int _scenbudget, double _timelimit);
+
+      // default destructor
+      virtual ~HIRO();
+
       /// the virtual functions for the inner minimisation problem of the hard instance generator
       // function to solve an inner integer program of a robust problem
-      virtual Solution solve_ip() = 0;
+      virtual HIROsolution solve_ip() = 0;
 
       // function to solve the regret problem of the min-max regret problem
       // TODO: check the comment
-		virtual Solution solve_regret() = 0;
+		virtual HIROsolution solve_regret() = 0;
 
+      /// sets the parameters for the problem
+      // sets the scenario budget
+		void set_budget(int _scenbudget);
+
+      // sets the time limit for the experiments
+		void set_timelimit(double _timelimit);
+
+      // algorithm type for the instance generation
+      typedef enum
+      {
+         HIROALGTYPE_RANDOM      = 0,
+         HIROALGTYPE_NORMAL      = 1
+         HIROALGTYPE_ITERATIVE   = 2,
+         HIROALGTYPE_LAZY        = 3,
+         HIROALGTYPE_MIDPOINT    = 4,
+         HIROALGTYPE_MIDPOINTLP  = 5,
+         HIROALGTYPE_ALT         = 6,
+         HIROALGTYPE_ALTERNATE   = 7,
+         HIROALGTYPE_LDR         = 8,
+         HIROALGTYPE_COLGEN      = 9
+      } algType;
+
+      // generates a hard instance given the input parameters
+      void generate_hard_instance(algType _type, int _n, int _p, int _N);
+
+	private:
       /// functions for generating random instances.
       // random instances sampled from a uniform distribution
 		void generate_rand(int _n, int _p, int _N);
@@ -66,20 +80,12 @@ class Select
       // hard instances generated using the LP of the midpoint integer program
 		void generate_midpointlp(int _n, int _p, int _N);
 
-      /// sets the parameters for the problem
-      // sets the scenario budget
-		void set_budget(int _scenbudget);
-
-      // sets the time limit for the experiments
-		void set_timelimit(double _timelimit);
-
 		std::vector<std::vector<double> > get_c();
 		void gen_U();
 		void set_problem(int _n, int _p, int _N, std::vector<std::vector<double> > _c);
 
 		void print();
 
-	private:
 		int n,p;
 		int N;
 		std::vector<std::vector<double> > c;
