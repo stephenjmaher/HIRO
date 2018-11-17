@@ -1,4 +1,4 @@
-#include "hirosolution.h"
+#include "hiro.h"
 
 using namespace std;
 
@@ -7,7 +7,7 @@ namespace hiro
    // default constructor
    HIROsolution::HIROsolution()
       : _x(0)
-      , _ub(-HIRO::INFINITY)
+      , _ub(INFTY)
       , _nodes(-1)
    {}
 
@@ -18,6 +18,11 @@ namespace hiro
       , _nodes(nodes)
    {}
 
+   // default destructor
+   HIROsolution::~HIROsolution()
+   {
+   }
+
    // assignment operator
    //HIROsolution::HIROsolution& operator=(const HIROsolution& rhs)
 
@@ -25,7 +30,7 @@ namespace hiro
    //HIROsolution::HIROsolution(const HIROsolution& rhs)
 
    // sets the values of the solution x
-   void HIROsolution::set_solution(std:vector<double> x)
+   void HIROsolution::set_solution(std::vector<double> x)
    {
       _x = x;
    }
@@ -52,7 +57,7 @@ namespace hiro
    // gets the upper bound
    double HIROsolution::get_upper_bound()
    {
-      return _ub
+      return _ub;
    }
 
    // gets the number of nodes processed
@@ -60,5 +65,4 @@ namespace hiro
    {
       return _nodes;
    }
-
 } // namespace hiro

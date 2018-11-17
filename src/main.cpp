@@ -1,5 +1,4 @@
-#include "select.h"
-#include "hirosolution.h"
+#include "selection.h"
 
 #include <ctime>
 #include <cstdlib>
@@ -10,6 +9,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace hiro;
 
 int main (int argc, char* argv[])
 {
@@ -20,12 +20,13 @@ int main (int argc, char* argv[])
 	int N = atoi(argv[3]);
 	int para = atoi(argv[4]);	
 	
-	Select sel;
+	Selection sel;
 	sel.set_timelimit(atoi(argv[5]));
 	sel.set_budget(atoi(argv[6]));
+   sel.set_num_select(p);
 	
 	double start = clock();
-   sel.generate_hard_instance(para, n, p, N);
+   sel.generate_hard_instance(HIRO::algType(para), n, N);
 		
 	cout<<"ALGTIME;"<<(clock()-start)/CLOCKS_PER_SEC<<"\n";
 	

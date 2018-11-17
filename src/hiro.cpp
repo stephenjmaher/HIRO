@@ -1,5 +1,4 @@
 #include "hiro.h"
-#include "hirosolution.h"
 #include <algorithm>
 #include <random>
 #include <set>
@@ -8,7 +7,7 @@ ILOSTLBEGIN
 
 #define NRCONS 100
 
-#define DEFAULT_TIMELIMIT 30;
+#define DEFAULT_TIMELIMIT 30
 
 using namespace std;
 
@@ -17,6 +16,7 @@ int __global_curK;
 vector<vector<double> > __globalc;
 double __globalub;
 
+#if 0
 ILOLAZYCONSTRAINTCALLBACK7(ScenarioLazyCallback, vector<vector<IloNumVar> >, cplexc,  vector<vector<IloNumVar> >, cplexlambda,  vector<vector<vector<IloNumVar> > >, cplexd, IloNumVar, cplext, int, _n, int, _p, int, _N)
 {
 
@@ -40,18 +40,18 @@ ILOLAZYCONSTRAINTCALLBACK7(ScenarioLazyCallback, vector<vector<IloNumVar> >, cpl
 
 
 	cout<<"**Solving sub**\n"<<flush;
-	HIRO hiro;
+   hiro::HIRO hiro;
 	hiro.set_problem(_n,_p,_N,cutc);
 
 	double start = clock();
-	Solution sol = hiro.solve_ip();
+	HIROsolution sol = hiro.solve_ip();
 	double end = clock();
 
 	cout<<"**CURTIME;"<<(end-start)/CLOCKS_PER_SEC<<"\n";
 
-   if (sol.ub > __globalub - 0.01)
+   if (sol.get_upper_bound() > __globalub - 0.01)
    {
-	   __globalub = sol.ub;
+	   __globalub = sol.get_upper_bound();
 	   for (int i=0; i<_N; ++i)
 		   for (int k=0; k<_n; ++k)
 				__globalc[i][k] = cutc[i][k];
@@ -60,7 +60,7 @@ ILOLAZYCONSTRAINTCALLBACK7(ScenarioLazyCallback, vector<vector<IloNumVar> >, cpl
 
 
    cout<<"**Adding x NR "<<__global_curK<<"**\n"<<flush;
-   if (getObjValue() > sol.ub + 0.01)
+   if (getObjValue() > sol.get_upper_bound() + 0.01)
    {
 	   //add constraints
 	   IloEnv env = getEnv();
@@ -69,7 +69,7 @@ ILOLAZYCONSTRAINTCALLBACK7(ScenarioLazyCallback, vector<vector<IloNumVar> >, cpl
 			IloExpr con(env);
 			for (int i=0; i<_N; ++i)
 				for (int k=0; k<_n; ++k)
-					con += sol.x[k] * cplexd[i][__global_curK][k];
+					con += sol.get_solution()[k] * cplexd[i][__global_curK][k];
 			add(cplext <= con);
 		}
 
@@ -87,7 +87,7 @@ ILOLAZYCONSTRAINTCALLBACK7(ScenarioLazyCallback, vector<vector<IloNumVar> >, cpl
    return;
 
 }
-
+#endif
 
 namespace hiro
 {
@@ -107,6 +107,11 @@ namespace hiro
    {
    }
 
+   // default destructor
+   HIRO::~HIRO()
+   {
+   }
+
    // sets the scenario budget
    void HIRO::set_budget(int _scenbudget)
    {
@@ -120,34 +125,41 @@ namespace hiro
    }
 
    // generates a hard instance given the input parameters
-   HIRO::generate_hard_instance(algType _type, int _n, int _p, int _N)
+   void HIRO::generate_hard_instance(algType _type, int _n, int _N)
    {
       assert(_type >= 0 && _type < HIRO::HIROALGTYPE_NUMTYPE);
 
       n = _n;
-      p = _p;
       N = _N;
 
       if (_type == HIROALGTYPE_RANDOM)
-         sel.generate_rand();
+         this->generate_rand();
       else if (_type == HIROALGTYPE_NORMAL)
-         sel.generate_normal();
+         this->generate_normal();
       else if (_type == HIROALGTYPE_ITERATIVE)
-         sel.generate_hard();
-      else if (_type == HIROALGTYPE_LAZY)
-         sel.generate_hard_lazy();
-      else if (_type == HIROALGTYPE_MIDPOINT)
-         sel.generate_midpoint();
+         this->generate_hard();
+      //else if (_type == HIROALGTYPE_LAZY)
+         //this->generate_hard_lazy();
+      //else if (_type == HIROALGTYPE_MIDPOINT)
+         //this->generate_midpoint();
       else if (_type == HIROALGTYPE_MIDPOINTLP)
-         sel.generate_midpointlp();
+         this->generate_midpointlp();
       else if (_type == HIROALGTYPE_ALT)
-         sel.generate_hard_alt();
+         this->generate_hard_alt();
       else if (_type == HIROALGTYPE_ALTERNATE)
-         sel.generate_hard_alternateheuristic();
-      else if (_type == HIROALGTYPE_LDR)
-         sel.generate_hard_LDR();
+         this->generate_hard_alternateheuristic();
+      //else if (_type == HIROALGTYPE_LDR)
+         //this->generate_hard_LDR();
       else if (_type == HIROALGTYPE_COLGEN)
-         sel.generate_hard(false);
+         this->generate_hard(false);
+   }
+
+   // sets the problem information
+   void HIRO::set_problem(int _n, int _N, std::vector<std::vector<double> > _c)
+   {
+      n = _n;
+      N = _N;
+      c = _c;
    }
 
    // returns the cost vector defining a hard instance
@@ -156,14 +168,26 @@ namespace hiro
       return c;
    }
 
+   // returns the number of elements 'n' in the problem
+   int HIRO::get_num_items()
+   {
+      return n;
+   }
+
+   // returns the number of scenarios 'N' for the problem
+   int HIRO::get_num_scenarios()
+   {
+      return N;
+   }
+
    /// PRIVATE METHODS
 
-   void HIRO::generate_rand(int _n, int _p, int _N)
+   void HIRO::generate_rand()
    {
       gen_U();
    };
 
-   void HIRO::generate_normal(int _n, int _p, int _N)
+   void HIRO::generate_normal()
    {
       std::default_random_engine generator;
       std::normal_distribution<double> distribution(50.0,20.0);
@@ -179,18 +203,14 @@ namespace hiro
 
    }
 
-   void  HIRO::generate_hard(int _n, int _p, int _N, bool solvecompact)
+   void  HIRO::generate_hard(bool solvecompact)
    {
-      n = _n;
-      p = _p;
-      N = _N;
-
       gen_U();
 
-      Solution startsol = solve_ip();
-      x.push_back(startsol.x);
+      HIROsolution startsol = solve_ip();
+      x.push_back(startsol.get_solution());
 
-      double bestobj = startsol.ub;
+      double bestobj = startsol.get_upper_bound();
       vector<vector<double> > bestc = c;
 
       double cstart = clock();
@@ -201,11 +221,11 @@ namespace hiro
 
       //solve sub
       double start = clock();
-      Solution sol = solve_ip();
+      HIROsolution sol = solve_ip();
       double end = clock();
-      if (sol.ub > bestobj - 0.01)
+      if (sol.get_upper_bound() > bestobj - 0.01)
       {
-         bestobj = sol.ub;
+         bestobj = sol.get_upper_bound();
          bestc = c;
       }
 
@@ -215,7 +235,7 @@ namespace hiro
 
       while(obj > bestobj + 0.01 && (clock()-cstart)/CLOCKS_PER_SEC < timelimit)
       {
-         x.push_back(sol.x);
+         x.push_back(sol.get_solution());
 
          double masterstart = clock();
          if (solvecompact)
@@ -228,15 +248,15 @@ namespace hiro
          sol = solve_ip();
          end = clock();
 
-         if (sol.ub > bestobj - 0.01)
+         if (sol.get_upper_bound() > bestobj - 0.01)
          {
             cout<<"*";
-            bestobj = sol.ub;
+            bestobj = sol.get_upper_bound();
             bestc = c;
          }
 
          ++itnr;
-         cout<<itnr<<";"<<obj<<";"<<bestobj<<";"<<sol.ub<<";";
+         cout<<itnr<<";"<<obj<<";"<<bestobj<<";"<<sol.get_upper_bound()<<";";
          cout<<(end-start)/CLOCKS_PER_SEC<<";"<<(masterend-masterstart)/CLOCKS_PER_SEC<<"\n"<<flush;
       }
 
@@ -244,12 +264,9 @@ namespace hiro
 
    }
 
-   void HIRO::generate_hard_lazy(int _n, int _p, int _N)
+#if 0
+   void HIRO::generate_hard_lazy()
    {
-      n = _n;
-      p = _p;
-      N = _N;
-
       gen_U();
 
       __globalc.resize(N);
@@ -260,9 +277,9 @@ namespace hiro
             __globalc[i][k] = c[i][k];
       }
 
-      Solution startsol = solve_ip();
-      x.push_back(startsol.x);
-      __globalub = startsol.ub;
+      HIROsolution startsol = solve_ip();
+      x.push_back(startsol.get_solution());
+      __globalub = startsol.get_upper_bound();
 
       //max lazy constraints
       __global_K = 10*N;
@@ -376,21 +393,18 @@ namespace hiro
       env.end();
 
    }
+#endif
 
-   void HIRO::generate_hard_alternateheuristic(int _n, int _p, int _N)
+   void HIRO::generate_hard_alternateheuristic()
    {
-      n = _n;
-      p = _p;
-      N = _N;
-
       gen_U();
 
-      Solution sol = solve_ip();
-      x.push_back(sol.x);
+      HIROsolution sol = solve_ip();
+      x.push_back(sol.get_solution());
       set<vector<int> > pool;
       vector<int> curx(n,0);
       for (int k=0; k<n; ++k)
-         if (sol.x[k] > 0.5)
+         if (sol.get_solution()[k] > 0.5)
             curx[k] = 1;
       pool.insert(curx);
 
@@ -405,7 +419,7 @@ namespace hiro
          sol = solve_ip();
          vector<int> tempx(n,0);
          for (int k=0; k<n; ++k)
-            if (sol.x[k] > 0.5)
+            if (sol.get_solution()[k] > 0.5)
             {
                tempx[k] = 1;
                //cout<<"Pack item "<<k<<"\n";
@@ -418,19 +432,16 @@ namespace hiro
             pool.insert(tempx);
             ++it;
             cout<<"Main iteration "<<it<<"\n"<<flush;
-            x.push_back(sol.x);
+            x.push_back(sol.get_solution());
             val = solve_master_alternateheuristic();
          }
       }
       while(repeat && (clock()-curt)/CLOCKS_PER_SEC < timelimit);
    }
 
-   void HIRO::generate_hard_LDR(int _n, int _p, int _N)
+#if 0
+   void HIRO::generate_hard_LDR()
    {
-      n = _n;
-      p = _p;
-      N = _N;
-
       gen_U();
 
       vector<double> lambda0(N);
@@ -715,18 +726,15 @@ namespace hiro
 
       }while(repeat && (clock()-curt)/CLOCKS_PER_SEC < timelimit);
    }
+#endif
 
-   void  HIRO::generate_hard_alt(int _n, int _p, int _N)
+   void  HIRO::generate_hard_alt()
    {
-      n = _n;
-      p = _p;
-      N = _N;
-
       gen_U();
       vector<vector<double> > bestc = c;
 
-      Solution startsol = solve_ip();
-      x.push_back(startsol.x);
+      HIROsolution startsol = solve_ip();
+      x.push_back(startsol.get_solution());
 
       double cstart = clock();
 
@@ -737,7 +745,7 @@ namespace hiro
          double obj = solve_master_alt();
 
          double start = clock();
-         Solution sol = solve_ip();
+         HIROsolution sol = solve_ip();
          double end = clock();
 
          double nomval = 0;
@@ -749,7 +757,7 @@ namespace hiro
             for (int k=0; k<n; ++k)
             {
                inomval += x[0][k]*c[i][k];
-               ialtval += sol.x[k]*c[i][k];
+               ialtval += sol.get_solution()[k]*c[i][k];
             }
             if (inomval > nomval)
                nomval = inomval;
@@ -758,7 +766,7 @@ namespace hiro
          }
          cout<<nomval<<";"<<altval<<"\n";
          if (nomval > altval + 0.01)
-            x.push_back(sol.x);
+            x.push_back(sol.get_solution());
          else
             repeat = false;
 
@@ -772,12 +780,9 @@ namespace hiro
 
    }
 
-   void  HIRO::generate_midpoint(int _n, int _p, int _N)
+#if 0
+   void HIRO::generate_midpoint()
    {
-      n = _n;
-      p = _p;
-      N = _N;
-
       gen_U();
 
       IloEnv env;
@@ -944,15 +949,11 @@ namespace hiro
       env.end();
 
    }
+#endif
 
 
-   void HIRO::generate_midpointlp(int _n, int _p, int _N)
+   void HIRO::generate_midpointlp()
    {
-
-      n = _n;
-      p = _p;
-      N = _N;
-
       gen_U();
 
       double succ = solve_midlp_it();
@@ -1029,12 +1030,8 @@ namespace hiro
 
    }
 
-   //void HIRO::generate_hard_heu(int _n, int _p, int _N)
+   //void HIRO::generate_hard_heu()
    //{
-      //n = _n;
-      //p = _p;
-      //N = _N;
-
       //c.resize(N);
       //for (int i=0; i<N; ++i)
          //c[i].resize(n,-1);
@@ -1060,14 +1057,6 @@ namespace hiro
       ////solve master
       //double obj = solve_master(false);
    //}
-
-   void HIRO::set_problem(int _n, int _p, int _N, std::vector<std::vector<double> > _c)
-   {
-      n = _n;
-      p = _p;
-      N = _N;
-      c = _c;
-   }
 
    void HIRO::print()
    {

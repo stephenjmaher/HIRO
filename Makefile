@@ -36,7 +36,7 @@ CONCERTLIBDIR = $(CONCERTDIR)/lib/$(SYSTEM)/$(LIBFORMAT)
 CCLNDIRS  = -L$(CPLEXLIBDIR) -L$(CONCERTLIBDIR)
 CCLNFLAGS = -lconcert -lilocplex -lcplex -lm -lpthread
 
-all: select
+all: selection
 
 CONCERTINCDIR = $(CONCERTDIR)/include
 CPLEXINCDIR   = $(CPLEXDIR)/include
@@ -69,11 +69,13 @@ clean :
 #
 # The examples
 #
-select: select.o
-	$(CCC) $(CCFLAGS) $(USRFLAGS) $(CCLNDIRS) -o bin/select obj/main.o obj/select.o $(CCLNFLAGS)
-select.o: src/main.cpp src/select.cpp
+selection: selection.o
+	$(CCC) $(CCFLAGS) $(USRFLAGS) $(CCLNDIRS) -o bin/selection obj/main.o obj/hiro.o obj/hirosolution.o obj/selection.o $(CCLNFLAGS)
+selection.o: src/main.cpp src/hiro.cpp src/hirosolution.cpp src/selection.cpp
 	$(CCC) -c $(CCFLAGS) $(USRFLAGS) src/main.cpp -o obj/main.o
-	$(CCC) -c $(CCFLAGS) ${USRFLAGS} src/select.cpp -o obj/select.o
+	$(CCC) -c $(CCFLAGS) $(USRFLAGS) src/hiro.cpp -o obj/hiro.o
+	$(CCC) -c $(CCFLAGS) $(USRFLAGS) src/hirosolution.cpp -o obj/hirosolution.o
+	$(CCC) -c $(CCFLAGS) ${USRFLAGS} src/selection.cpp -o obj/selection.o
 
 eval: evaluation.o
 	$(CCC) $(CCFLAGS) $(USRFLAGS) $(CCLNDIRS) -o bin/evaluation obj-eval/main.o $(CCLNFLAGS)
