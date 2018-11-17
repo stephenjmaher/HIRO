@@ -1,4 +1,4 @@
-# HIRO
+# HIRO - Hard Instances for Robust Optimization
 Methods for generating hard instances for robust optimization problems
 
 This is a start of the HIRO package that will be extended to include many different underlying integer programming problems. The structure of this package is as follows:
