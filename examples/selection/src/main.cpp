@@ -14,19 +14,28 @@ using namespace hiro;
 int main (int argc, char* argv[])
 {
 	srand(atoi(argv[7]));
-	
-	int n = atoi(argv[1]);
-	int p = atoi(argv[2]);
-	int N = atoi(argv[3]);
-	int para = atoi(argv[4]);	
-	
+
+   int type = atoi(argv[4]);
+   int n = atoi(argv[1]);
+   int N = atoi(argv[3]);
+   int p = atoi(argv[2]);
+
+
 	Selection sel;
-	sel.set_timelimit(atoi(argv[5]));
+   // setting the basic problem information
+   // NOTE: This is required to generate hard instances
+   sel.set_problem(type, n, N);
+	
+	sel.set_timelimit(atof(argv[5]));
 	sel.set_budget(atoi(argv[6]));
    sel.set_num_select(p);
 	
 	double start = clock();
-   sel.generate_hard_instance(HIRO::algType(para), n, N);
+   bool success = sel.generate_hard_instance();
+
+   // if the generation of hard instances fails, then the program terminates
+   if (!success)
+      return 0;
 		
 	cout<<"ALGTIME;"<<(clock()-start)/CLOCKS_PER_SEC<<"\n";
 	

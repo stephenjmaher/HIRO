@@ -97,6 +97,10 @@ namespace hiro
    HIRO::HIRO()
       : scenbudget(0)
       , timelimit(DEFAULT_TIMELIMIT)
+      , typeset(false)
+      , numcoeffsset(false)
+      , numscenariosset(false)
+      , problemsetup(false)
    {
    }
 
@@ -104,6 +108,10 @@ namespace hiro
    HIRO::HIRO(int _scenbudget, double _timelimit)
       : scenbudget(_scenbudget)
       , timelimit(_timelimit)
+      , typeset(false)
+      , numcoeffsset(false)
+      , numscenariosset(false)
+      , problemsetup(false)
    {
    }
 
@@ -124,42 +132,88 @@ namespace hiro
       timelimit = _timelimit;
    }
 
-   // generates a hard instance given the input parameters
-   void HIRO::generate_hard_instance(algType _type, int _n, int _N)
+   // sets the problem information
+   void HIRO::set_problem(int _type, int _n, int _N)
    {
-      assert(_type >= 0 && _type < HIRO::HIROALGTYPE_NUMTYPE);
-
-      n = _n;
-      N = _N;
-
-      if (_type == HIROALGTYPE_RANDOM)
-         this->generate_rand();
-      else if (_type == HIROALGTYPE_NORMAL)
-         this->generate_normal();
-      else if (_type == HIROALGTYPE_ITERATIVE)
-         this->generate_hard();
-      //else if (_type == HIROALGTYPE_LAZY)
-         //this->generate_hard_lazy();
-      //else if (_type == HIROALGTYPE_MIDPOINT)
-         //this->generate_midpoint();
-      else if (_type == HIROALGTYPE_MIDPOINTLP)
-         this->generate_midpointlp();
-      else if (_type == HIROALGTYPE_ALT)
-         this->generate_hard_alt();
-      else if (_type == HIROALGTYPE_ALTERNATE)
-         this->generate_hard_alternateheuristic();
-      //else if (_type == HIROALGTYPE_LDR)
-         //this->generate_hard_LDR();
-      else if (_type == HIROALGTYPE_COLGEN)
-         this->generate_hard(false);
+      this->set_type(_type);
+      this->set_num_cost_coefficients(_n);
+      this->set_num_scenarios(_N);
+      problemsetup = typeset && numcoeffsset && numscenariosset;
    }
 
    // sets the problem information
-   void HIRO::set_problem(int _n, int _N, std::vector<std::vector<double> > _c)
+   void HIRO::set_problem(int _type, int _n, int _N, int _scenbudget, double _timelimit)
+   {
+      this->set_type(_type);
+      this->set_num_cost_coefficients(_n);
+      this->set_num_scenarios(_N);
+      scenbudget = _scenbudget;
+      timelimit = _timelimit;
+      problemsetup = typeset && numcoeffsset && numscenariosset;
+   }
+
+   // sets the algorithm type
+   void HIRO::set_type(int _type)
+   {
+      type = HIRO::algType(_type);
+      typeset = true;
+      problemsetup = typeset && numcoeffsset && numscenariosset;
+   }
+
+   // sets the number of cost coefficients
+   void HIRO::set_num_cost_coefficients(int _n)
    {
       n = _n;
+      numcoeffsset = true;
+      problemsetup = typeset && numcoeffsset && numscenariosset;
+   }
+
+   // sets the number of scenarios
+   void HIRO::set_num_scenarios(int _N)
+   {
       N = _N;
-      c = _c;
+      numscenariosset = true;
+      problemsetup = typeset && numcoeffsset && numscenariosset;
+   }
+
+   // generates a hard instance given the input parameters
+   bool HIRO::generate_hard_instance()
+   {
+      if (!problemsetup)
+      {
+         cout<<"The problem must be setup before generating hard instances."<<endl;
+         cout<<"This is done either by calling `set_problem` or"<<endl;
+         cout<<"calling `set_type`, `set_num_cost_coefficients` and `set_num_scenarios`"<<endl;
+      }
+      assert(type >= 0 && type < HIRO::HIROALGTYPE_NUMTYPE);
+
+      if (type == HIROALGTYPE_RANDOM)
+         this->generate_rand();
+      else if (type == HIROALGTYPE_NORMAL)
+         this->generate_normal();
+      else if (type == HIROALGTYPE_ITERATIVE)
+         this->generate_hard();
+      //else if (type == HIROALGTYPE_LAZY)
+         //this->generate_hard_lazy();
+      //else if (type == HIROALGTYPE_MIDPOINT)
+         //this->generate_midpoint();
+      else if (type == HIROALGTYPE_MIDPOINTLP)
+         this->generate_midpointlp();
+      else if (type == HIROALGTYPE_ALT)
+         this->generate_hard_alt();
+      else if (type == HIROALGTYPE_ALTERNATE)
+         this->generate_hard_alternateheuristic();
+      //else if (type == HIROALGTYPE_LDR)
+         //this->generate_hard_LDR();
+      else if (type == HIROALGTYPE_COLGEN)
+         this->generate_hard(false);
+      else
+      {
+         cout<<"Sorry, "<<type<<" is not a valid algorithm option."<<endl;
+         return false;
+      }
+
+      return true;
    }
 
    // returns the cost vector defining a hard instance

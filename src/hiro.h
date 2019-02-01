@@ -92,11 +92,21 @@ namespace hiro
             HIROALGTYPE_NUMTYPE     = 10
          } algType;
 
-         // generates a hard instance given the input parameters
-         void generate_hard_instance(algType _type, int _n, int _N);
-
          // sets the problem information
-         void set_problem(int _n, int _N, std::vector<std::vector<double> > _c);
+         void set_problem(int _type, int _n, int _N);
+         void set_problem(int _type, int _n, int _N, int _scenbudget, double _timelimit);
+
+         // sets the algorithm type
+         void set_type(int _type);
+
+         // sets the number of cost coefficients
+         void set_num_cost_coefficients(int _n);
+
+         // sets the number of scenarios
+         void set_num_scenarios(int _N);
+
+         // generates a hard instance given the input parameters
+         bool generate_hard_instance();
 
          /// functions to access member variables
          // returns the cost vector defining a hard instance
@@ -151,6 +161,11 @@ namespace hiro
          int scenbudget;
          double timelimit;
 
+         bool typeset;
+         bool numcoeffsset;
+         bool numscenariosset;
+         bool problemsetup;
+         algType type;
          int n;
          int N;
          std::vector<std::vector<double> > c;
