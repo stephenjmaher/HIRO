@@ -5,26 +5,47 @@ This is a start of the HIRO package that will be extended to include many differ
 
 - `HIRO` base class containing methods for generating hard instances for robust optimisation
 - `HIROsolution` base class to facilitate the transfer of solutions from derived classes to the base class functions
-- `Selection` derived class for the selection problem. The pure virtual functions of `solve_ip` and `solve_regret` have been implemented in this derived class
 
-Currently, the `main.cpp` only looks at the `Selection` problem. This needs to be extended. My thought is to create an "examples" folder that will contain each of the integer programs that we want to consider. This is yet to be completed.
+These two classes comprise the **HIRO** library. This library is used in the examples for creating difficult instances for different combinatorial optimisation problems. However, the library is not limited to combinatorial optimisation problems and can be used to generate hard robust optimisation instances for general mixed integer programs.
+
+## Examples
+There are currently two examples in the **HIRO** package
+
+### Selection
+This consists of the following files:
+- `main.cpp` the main file for executing the HIRO package to generate hard instances for the selection problem.
+- `selection.cpp` and `selection.h` containing the derived class for the selection problem. The pure virtual functions of `solve_ip` and `solve_regret` have been implemented in this derived class
+
+### Traveling Salesman Problem
+This consists of the following files:
+- `main.cpp` the main file for executing the HIRO package to generate hard instances for the TSP.
+- `tsp.cpp` and `tsp.h` containing the derived class for the TSP. The pure virtual functions of `solve_ip` and `solve_regret` have been implemented in this derived class
 
 # Extending the package
 
-The easiest way to extend the package is to write new derived classes of the `HIRO` class. The `Selection` class is a good example. After writing the new derived class, to use the functions you will need to do the following:
+The easiest way to extend the package is to write a new example. It is possible to copy one of the current examples and then modify it to suit your needs. The basic steps for creating a new example are (we will call this new example *Elephant*):
 
-1. modify `main.cpp` to include the appropriate header files.
-1. construct an object in `main.cpp` and then call the appropriate functions to generate the hard instances
-1. Modify the `Makefile` to compile the new derived class.
+1. copy an existing example directory (such as `selection`) and rename it **elephant**. The files and directories needed are the `src` directory, including its contents, and the `Makefile`.
+1. change to the `elephant` directory and open the `Makefile`. Change the `MAINNAME` from `selection` to `elephant` and change `selection.o` in `MAINOBJ` to `elephant.o`.
+1. change to the `elephant/src` directory and rename `selection.cpp` and `selection.h` to `elephant.cpp` and `elephant.h` respectively.
+1. open `elephant.h` and replace all instances of `selection` (respecting the case, so this could be `selection`, `Selection` or `SELECTION`) with `elephant`.
+1. open `elephant.cpp` and replace all instances of `selection` (respecting the case, so this could be `selection`, `Selection` or `SELECTION`) with `elephant`.
+1. modify the `solve_ip()` and `solve_regret()` so that the integer program and the regret problem for *Elephant* can be solved within the **HIRO** package (NOTE: it is not necessary to implement `solve_regret()`, but it should be an empty function that returns an instance of `HIROsolution`).
+1. open `main.cpp`, change all instances of `selection` to `elephant` and modify this file to input the necessary parameters for the *Elephant* integer program.
 
-# Installation issues
+# Installation
 
-To build the **HIRO** package you will need:
+You need to first build the **HIRO** library and then build your example. Follow these steps
 
-- CPLEX 
-  - The path to CPLEX will need to be updated in the Makefile for your distribution. *Please don't commit such changes to the repo*.
+1. in the `hiro` base directory, open the `Makefile` and modify the path to CPLEX and CONCERT.
+1. call `make`
+1. change to your example directory, such as `selection`.
+  1. modify the path to CPLEX and CONCERT
+  1. call `make`
 
-Also, the Makefile doesn't create the `obj` and `bin` directories. So for the first installation, you will need to create these directories.
+## Installation issues
+
+The Makefile doesn't create the `obj` and `bin` directories. So for the first installation, you will need to create these directories.
 
 # NOTES
 
