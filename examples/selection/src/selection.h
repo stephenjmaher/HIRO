@@ -18,10 +18,6 @@ class Selection : public HIRO
       // function to solve an inner integer program of a robust problem
       virtual const HIROsolution solve_ip();
 
-      // function to solve the regret problem of the min-max regret problem
-      // TODO: check the comment
-      virtual const HIROsolution solve_regret();
-
       // sets the number of items to select
       void set_num_select(int _p);
 

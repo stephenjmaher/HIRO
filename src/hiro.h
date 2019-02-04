@@ -62,12 +62,8 @@ namespace hiro
          virtual ~HIRO();
 
          /// the virtual functions for the inner minimisation problem of the hard instance generator
-         // function to solve an inner integer program of a robust problem
+         // function to solve an inner integer program of a robust problem.
          virtual const HIROsolution solve_ip() = 0;
-
-         // function to solve the regret problem of the min-max regret problem
-         // TODO: check the comment
-         virtual const HIROsolution solve_regret() = 0;
 
          /// sets the parameters for the problem
          // sets the scenario budget

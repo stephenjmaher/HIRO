@@ -188,10 +188,3 @@ const HIROsolution TSP::solve_ip()
 
 	return sol;
 }
-
-const HIROsolution TSP::solve_regret()
-{
-   HIROsolution sol;
-
-   return sol;
-}
