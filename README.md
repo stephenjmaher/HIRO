@@ -14,12 +14,12 @@ There are currently two examples in the **HIRO** package
 ### Selection
 This consists of the following files:
 - `main.cpp` the main file for executing the HIRO package to generate hard instances for the selection problem.
-- `selection.cpp` and `selection.h` containing the derived class for the selection problem. The pure virtual functions of `solve_ip` and `solve_regret` have been implemented in this derived class
+- `selection.cpp` and `selection.h` containing the derived class for the selection problem. The pure virtual function of `solve_ip` has been implemented in this derived class
 
 ### Traveling Salesman Problem
 This consists of the following files:
 - `main.cpp` the main file for executing the HIRO package to generate hard instances for the TSP.
-- `tsp.cpp` and `tsp.h` containing the derived class for the TSP. The pure virtual functions of `solve_ip` and `solve_regret` have been implemented in this derived class
+- `tsp.cpp` and `tsp.h` containing the derived class for the TSP. The pure virtual functions of `solve_ip` has been implemented in this derived class
 
 # Extending the package
 
@@ -30,7 +30,7 @@ The easiest way to extend the package is to write a new example. It is possible 
 1. change to the `elephant/src` directory and rename `selection.cpp` and `selection.h` to `elephant.cpp` and `elephant.h` respectively.
 1. open `elephant.h` and replace all instances of `selection` (respecting the case, so this could be `selection`, `Selection` or `SELECTION`) with `elephant`.
 1. open `elephant.cpp` and replace all instances of `selection` (respecting the case, so this could be `selection`, `Selection` or `SELECTION`) with `elephant`.
-1. modify the `solve_ip()` and `solve_regret()` so that the integer program and the regret problem for *Elephant* can be solved within the **HIRO** package (NOTE: it is not necessary to implement `solve_regret()`, but it should be an empty function that returns an instance of `HIROsolution`).
+1. modify the `solve_ip()` so that the integer program for *Elephant* can be solved within the **HIRO** package.
 1. open `main.cpp`, change all instances of `selection` to `elephant` and modify this file to input the necessary parameters for the *Elephant* integer program.
 
 # Installation
