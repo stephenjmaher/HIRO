@@ -46,7 +46,7 @@ int main (int argc, char* argv[])
 	HIROsolution sol = sel.solve_ip(sel.get_num_elements(), sel.get_num_scenarios(), sel.get_c());
 	double soltime = (clock()-start)/CLOCKS_PER_SEC;
 	cout<<"TIME;"<<soltime<<"\n";
-	cout<<"NODES;"<<sol.get_nodes()<<"\n";
+	cout<<"NODES;"<<sel.get_num_nodes()<<"\n";
 	cout<<"OBJ;"<<sol.get_upper_bound()<<"\n";
 
    // output the resulting instance to a file

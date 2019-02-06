@@ -59,13 +59,15 @@ const HIROsolution Selection::solve_ip(int numelements, int numscenarios, vector
 
    //TODO: Need to adds setsolution functions for nodes, ub and x
 
-   sol.set_nodes(cplex.getNnodes());
    sol.set_upper_bound(cplex.getObjValue());
 
    vector<double> x(n, 0);
    for (int j=0; j<n; ++j)
       x[j] = cplex.getValue(cplexx[j]);
    sol.set_solution(x);
+
+   // setting the solving statistics
+   set_num_nodes(cplex.getNnodes());
 
    env.end();
 
@@ -83,4 +85,17 @@ void Selection::set_num_select(int _p)
 int Selection::get_num_select()
 {
    return p;
+}
+
+// sets the number of nodes processed in the last call to solve_ip
+void Selection::set_num_nodes(int _nodes)
+{
+   assert(_nodes >= 0);
+   nodes = _nodes;
+}
+
+// returns the number of nodes processed in the last call to solve_ip
+int Selection::get_num_nodes()
+{
+   return nodes;
 }

@@ -25,8 +25,18 @@ class Selection : public HIRO
       // returns the number of items to select
       int get_num_select();
 
+      /// Statistic information
+      // sets the number of nodes processed in the last call to solve_ip
+      void set_num_nodes(int _nodes);
+
+      // returns the number of nodes processed in the last call to solve_ip
+      int get_num_nodes();
+
    private:
       // private variables for the selection problem
       int p;   // the number of items to select
+
+      // solving statistics
+      int nodes;
 };
 #endif

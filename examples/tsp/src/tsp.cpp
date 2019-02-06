@@ -171,11 +171,6 @@ const HIROsolution TSP::solve_ip(int numelements, int numscenarios, vector< vect
 
 	bool result = cplex.solve();
 
-
-
-
-
-	sol.set_nodes(cplex.getNnodes());
 	sol.set_upper_bound(cplex.getObjValue());
 
 	vector<double> x(n, 0);
@@ -184,7 +179,23 @@ const HIROsolution TSP::solve_ip(int numelements, int numscenarios, vector< vect
 			x[dmap[i][j]] = cplex.getValue(cpx[i][j]);
 	sol.set_solution(x);
 
+   // setting the solving statistics
+   set_num_nodes(cplex.getNnodes());
+
 	env.end();
 
 	return sol;
+}
+
+// sets the number of nodes processed in the last call to solve_ip
+void TSP::set_num_nodes(int _nodes)
+{
+   assert(_nodes >= 0);
+   nodes = _nodes;
+}
+
+// returns the number of nodes processed in the last call to solve_ip
+int TSP::get_num_nodes()
+{
+   return nodes;
 }

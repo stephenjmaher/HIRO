@@ -14,7 +14,7 @@ namespace hiro
          HIROsolution();
 
          // constructor with inputs
-         HIROsolution(std::vector<double> x, double ub, int nodes);
+         HIROsolution(std::vector<double> x, double ub);
 
          // assignment operator
          //HIROsolution& operator=(const HIROsolution& rhs);
@@ -31,22 +31,15 @@ namespace hiro
          // sets the upper bound
          void set_upper_bound(double ub);
 
-         // sets the number of nodes processed
-         void set_nodes(int nodes);
-
          // gets the values of the solution x
          std::vector<double> get_solution();
 
          // gets the upper bound
          double get_upper_bound();
 
-         // gets the number of nodes processed
-         int get_nodes();
-
       private:
          std::vector<double> _x;
          double _ub;
-         int _nodes;
    };
 
    class HIRO

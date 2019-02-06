@@ -52,7 +52,7 @@ int main (int argc, char* argv[])
 	HIROsolution sol = tsp.solve_ip(tsp.get_num_elements(), tsp.get_num_scenarios(), tsp.get_c());
 	double soltime = (clock()-start)/CLOCKS_PER_SEC;
 	cout<<"TIME;"<<soltime<<"\n";
-	cout<<"NODES;"<<sol.get_nodes()<<"\n";
+	cout<<"NODES;"<<tsp.get_num_nodes()<<"\n";
 	cout<<"OBJ;"<<sol.get_upper_bound()<<"\n";
 
 	vector<vector<double> > c = tsp.get_c();
