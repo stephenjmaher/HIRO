@@ -148,6 +148,28 @@ namespace hiro
 
          void print();
 
+         /// hard instance generation methods
+         // methods for solving the master problem of the iterative algorithms
+         double solve_master(bool relax=false);
+         double solve_master_decomp(double lowerbound, bool relax=false);
+         double solve_master_alt();
+         double solve_master_alternateheuristic();
+         double solve_midlp_it();
+
+         // methods for solving the subproblem in the column generation approach
+         double build_decomp_sub(const IloEnv env, IloModel& model, IloCplex& cplex, IloObjective& objective,
+            std::vector<std::vector<IloNumVar> >& cplexd, std::vector<IloNumVar>& cplexlambda, bool relax);
+         double solve_decomp_sub(IloEnv& env, IloModel& model, IloCplex& cplex, IloObjective& objective,
+            std::vector<std::vector<IloNumVar> > cplexd, std::vector<IloNumVar> cplexlambda, int j, double costdual,
+            double convexdual, std::vector<std::vector<double> > scenduals, std::vector<double> exclude, double gap,
+            bool enumerate, bool& add);
+         double execute_column_generation(IloEnv& masterenv, IloModel& master, IloCplex& cpxmaster, IloEnv& env,
+            IloModel& model, IloCplex& cplex, IloObjective& objective, std::vector<std::vector<IloNumVar> > cplexd,
+            std::vector<IloNumVar>& cplexlambda, std::vector<std::vector<IloNumVar> >& cplexalpha,
+            std::vector<IloRange> costcons, std::vector<IloRange> convexcons,
+            std::vector<std::vector<std::vector<IloRange> > > scencons,
+            std::vector<std::vector<std::vector<double> > >& columns, std::vector<int>& ncolumns, double lowerbound);
+
          int scenbudget;
          double timelimit;
 
@@ -166,25 +188,6 @@ namespace hiro
          //bounds on c
          std::vector<std::vector<double> > cl;
          std::vector<std::vector<double> > cu;
-
-         double solve_master(bool relax=false);
-         double solve_master_decomp(double lowerbound, bool relax=false);
-         double solve_master_alt();
-         double solve_master_alternateheuristic();
-         double solve_midlp_it();
-
-         double build_decomp_sub(const IloEnv env, IloModel& model, IloCplex& cplex, IloObjective& objective,
-            std::vector<std::vector<IloNumVar> >& cplexd, std::vector<IloNumVar>& cplexlambda, bool relax);
-         double solve_decomp_sub(IloEnv& env, IloModel& model, IloCplex& cplex, IloObjective& objective,
-            std::vector<std::vector<IloNumVar> > cplexd, std::vector<IloNumVar> cplexlambda, int j, double costdual,
-            double convexdual, std::vector<std::vector<double> > scenduals, std::vector<double> exclude, double gap,
-            bool enumerate, bool& add);
-         double execute_column_generation(IloEnv& masterenv, IloModel& master, IloCplex& cpxmaster, IloEnv& env,
-            IloModel& model, IloCplex& cplex, IloObjective& objective, std::vector<std::vector<IloNumVar> > cplexd,
-            std::vector<IloNumVar>& cplexlambda, std::vector<std::vector<IloNumVar> >& cplexalpha,
-            std::vector<IloRange> costcons, std::vector<IloRange> convexcons,
-            std::vector<std::vector<std::vector<IloRange> > > scencons,
-            std::vector<std::vector<std::vector<double> > >& columns, std::vector<int>& ncolumns, double lowerbound);
    };
 
 } // namespace hiro
