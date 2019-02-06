@@ -16,6 +16,7 @@ class TSP : public HIRO
 
       /// the virtual functions for the inner minimisation problem of the hard instance generator
       // function to solve an inner integer program of a robust problem
-      virtual const HIROsolution solve_ip();
+      virtual const HIROsolution solve_ip(int numelements, int numscenarios,
+            std::vector< std::vector<double> > scenariocosts);
 };
 #endif

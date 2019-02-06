@@ -44,7 +44,7 @@ ILOLAZYCONSTRAINTCALLBACK7(ScenarioLazyCallback, vector<vector<IloNumVar> >, cpl
 	hiro.set_problem(_n,_p,_N,cutc);
 
 	double start = clock();
-	HIROsolution sol = hiro.solve_ip();
+	HIROsolution sol = hiro.solve_ip(get_num_elements(), get_num_scenarios(), get_c());
 	double end = clock();
 
 	cout<<"**CURTIME;"<<(end-start)/CLOCKS_PER_SEC<<"\n";
@@ -136,7 +136,7 @@ namespace hiro
    void HIRO::set_problem(int _type, int _n, int _N)
    {
       this->set_type(_type);
-      this->set_num_cost_coefficients(_n);
+      this->set_num_elements(_n);
       this->set_num_scenarios(_N);
       problemsetup = typeset && numcoeffsset && numscenariosset;
    }
@@ -145,7 +145,7 @@ namespace hiro
    void HIRO::set_problem(int _type, int _n, int _N, int _scenbudget, double _timelimit)
    {
       this->set_type(_type);
-      this->set_num_cost_coefficients(_n);
+      this->set_num_elements(_n);
       this->set_num_scenarios(_N);
       scenbudget = _scenbudget;
       timelimit = _timelimit;
@@ -161,7 +161,7 @@ namespace hiro
    }
 
    // sets the number of cost coefficients
-   void HIRO::set_num_cost_coefficients(int _n)
+   void HIRO::set_num_elements(int _n)
    {
       n = _n;
       numcoeffsset = true;
@@ -183,7 +183,7 @@ namespace hiro
       {
          cout<<"The problem must be setup before generating hard instances."<<endl;
          cout<<"This is done either by calling `set_problem` or"<<endl;
-         cout<<"calling `set_type`, `set_num_cost_coefficients` and `set_num_scenarios`"<<endl;
+         cout<<"calling `set_type`, `set_num_elements` and `set_num_scenarios`"<<endl;
       }
       assert(type >= 0 && type < HIRO::HIROALGTYPE_NUMTYPE);
 
@@ -223,7 +223,7 @@ namespace hiro
    }
 
    // returns the number of elements 'n' in the problem
-   int HIRO::get_num_items()
+   int HIRO::get_num_elements()
    {
       return n;
    }
@@ -261,7 +261,7 @@ namespace hiro
    {
       gen_U();
 
-      HIROsolution startsol = solve_ip();
+      HIROsolution startsol = solve_ip(get_num_elements(), get_num_scenarios(), get_c());
       x.push_back(startsol.get_solution());
 
       double bestobj = startsol.get_upper_bound();
@@ -275,7 +275,7 @@ namespace hiro
 
       //solve sub
       double start = clock();
-      HIROsolution sol = solve_ip();
+      HIROsolution sol = solve_ip(get_num_elements(), get_num_scenarios(), get_c());
       double end = clock();
       if (sol.get_upper_bound() > bestobj - 0.01)
       {
@@ -299,7 +299,7 @@ namespace hiro
          double masterend = clock();
 
          start = clock();
-         sol = solve_ip();
+         sol = solve_ip(get_num_elements(), get_num_scenarios(), get_c());
          end = clock();
 
          if (sol.get_upper_bound() > bestobj - 0.01)
@@ -331,7 +331,7 @@ namespace hiro
             __globalc[i][k] = c[i][k];
       }
 
-      HIROsolution startsol = solve_ip();
+      HIROsolution startsol = solve_ip(get_num_elements(), get_num_scenarios(), get_c());
       x.push_back(startsol.get_solution());
       __globalub = startsol.get_upper_bound();
 
@@ -453,7 +453,7 @@ namespace hiro
    {
       gen_U();
 
-      HIROsolution sol = solve_ip();
+      HIROsolution sol = solve_ip(get_num_elements(), get_num_scenarios(), get_c());
       x.push_back(sol.get_solution());
       set<vector<int> > pool;
       vector<int> curx(n,0);
@@ -470,7 +470,7 @@ namespace hiro
       bool repeat = true;
       do
       {
-         sol = solve_ip();
+         sol = solve_ip(get_num_elements(), get_num_scenarios(), get_c());
          vector<int> tempx(n,0);
          for (int k=0; k<n; ++k)
             if (sol.get_solution()[k] > 0.5)
@@ -787,7 +787,7 @@ namespace hiro
       gen_U();
       vector<vector<double> > bestc = c;
 
-      HIROsolution startsol = solve_ip();
+      HIROsolution startsol = solve_ip(get_num_elements(), get_num_scenarios(), get_c());
       x.push_back(startsol.get_solution());
 
       double cstart = clock();
@@ -799,7 +799,7 @@ namespace hiro
          double obj = solve_master_alt();
 
          double start = clock();
-         HIROsolution sol = solve_ip();
+         HIROsolution sol = solve_ip(get_num_elements(), get_num_scenarios(), get_c());
          double end = clock();
 
          double nomval = 0;

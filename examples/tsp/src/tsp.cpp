@@ -92,15 +92,15 @@ ILOLAZYCONSTRAINTCALLBACK2(CycleLazyCallback, vector<vector<IloNumVar> >, cpx, i
    return;
 }
 
-const HIROsolution TSP::solve_ip()
+const HIROsolution TSP::solve_ip(int numelements, int numscenarios, vector< vector<double> > scenariocosts)
 {
    HIROsolution sol;
 
    // getting the member variables that define the problem
-   int n = this->get_num_items();
+   int n = numelements;
    int nr_nodes = sqrt(n);
-   int K = this->get_num_scenarios();
-   vector< vector<double> > c = this->get_c();
+   int K = numscenarios;
+   vector< vector<double> > c = scenariocosts;
 
 	//cout<<"Solving problem with "<<nr_nodes<<" cities.\n";
 

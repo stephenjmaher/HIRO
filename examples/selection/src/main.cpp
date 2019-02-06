@@ -43,7 +43,7 @@ int main (int argc, char* argv[])
 	cout<<"ALGTIME;"<<(clock()-start)/CLOCKS_PER_SEC<<"\n";
 
 	start = clock();
-	HIROsolution sol = sel.solve_ip();
+	HIROsolution sol = sel.solve_ip(sel.get_num_elements(), sel.get_num_scenarios(), sel.get_c());
 	double soltime = (clock()-start)/CLOCKS_PER_SEC;
 	cout<<"TIME;"<<soltime<<"\n";
 	cout<<"NODES;"<<sol.get_nodes()<<"\n";

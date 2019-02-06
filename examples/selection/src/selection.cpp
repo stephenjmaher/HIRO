@@ -14,14 +14,14 @@ Selection::~Selection()
 {
 }
 
-const HIROsolution Selection::solve_ip()
+const HIROsolution Selection::solve_ip(int numelements, int numscenarios, vector< vector<double> > scenariocosts)
 {
    HIROsolution sol;
 
    // getting the member variables that define the problem
-   int n = this->get_num_items();
-   int N = this->get_num_scenarios();
-   vector< vector<double> > c = this->get_c();
+   int n = numelements;
+   int N = numscenarios;
+   vector< vector<double> > c = scenariocosts;
 
    IloEnv env;
    IloModel model(env);

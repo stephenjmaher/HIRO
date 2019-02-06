@@ -63,7 +63,8 @@ namespace hiro
 
          /// the virtual functions for the inner minimisation problem of the hard instance generator
          // function to solve an inner integer program of a robust problem.
-         virtual const HIROsolution solve_ip() = 0;
+         virtual const HIROsolution solve_ip(int numelements, int numscenarios,
+            std::vector< std::vector<double> > scenariocosts) = 0;
 
          /// sets the parameters for the problem
          // sets the scenario budget
@@ -95,8 +96,8 @@ namespace hiro
          // sets the algorithm type
          void set_type(int _type);
 
-         // sets the number of cost coefficients
-         void set_num_cost_coefficients(int _n);
+         // sets the number of robust elements
+         void set_num_elements(int _n);
 
          // sets the number of scenarios
          void set_num_scenarios(int _N);
@@ -108,8 +109,8 @@ namespace hiro
          // returns the cost vector defining a hard instance
          std::vector<std::vector<double> > get_c();
 
-         // returns the number of elements 'n' in the problem
-         int get_num_items();
+         // returns the number of robust elements 'n' in the problem
+         int get_num_elements();
 
          // returns the number of scenarios 'N' for the problem
          int get_num_scenarios();
