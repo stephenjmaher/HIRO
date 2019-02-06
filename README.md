@@ -25,13 +25,12 @@ This consists of the following files:
 
 The easiest way to extend the package is to write a new example. It is possible to copy one of the current examples and then modify it to suit your needs. The basic steps for creating a new example are (we will call this new example *Elephant*):
 
-1. copy an existing example directory (such as `selection`) and rename it **elephant**. The files and directories needed are the `src` directory, including its contents, and the `Makefile`.
-1. change to the `elephant` directory and open the `Makefile`. Change the `MAINNAME` from `selection` to `elephant` and change `selection.o` in `MAINOBJ` to `elephant.o`.
-1. change to the `elephant/src` directory and rename `selection.cpp` and `selection.h` to `elephant.cpp` and `elephant.h` respectively.
-1. open `elephant.h` and replace all instances of `selection` (respecting the case, so this could be `selection`, `Selection` or `SELECTION`) with `elephant`.
-1. open `elephant.cpp` and replace all instances of `selection` (respecting the case, so this could be `selection`, `Selection` or `SELECTION`) with `elephant`.
-1. modify the `solve_ip()` so that the integer program for *Elephant* can be solved within the **HIRO** package.
-1. open `main.cpp`, change all instances of `selection` to `elephant` and modify this file to input the necessary parameters for the *Elephant* integer program.
+1. copy the *xyz* example directory and rename it **elephant**. The files and directories needed are the `src` directory, including its contents, and the `Makefile`.
+1. change to the `elephant` directory.
+1. replace all occurences of `xyz` to `elephant` (preserving case) in the `Makefile` and all of the source files in `src`.
+1. in the `src` directory, rename `xyz.cpp` and `xyz.cpp` to `elephant.h` and `elephant.cpp` respectively.
+1. implement the `solve_ip()` so that the integer program for *Elephant* can be solved within the **HIRO** package.
+1. open `main.cpp`, modify this file to input the necessary parameters for the *Elephant* integer program.
 
 # Installation
 
