@@ -25,7 +25,7 @@ This consists of the following files:
 
 The easiest way to extend the package is to write a new example. It is possible to copy one of the current examples and then modify it to suit your needs. The basic steps for creating a new example are (we will call this new example *Elephant*):
 
-1. copy the *xyz* example directory and rename it **elephant**. The files and directories needed are the `src` directory, including its contents, and the `Makefile`.
+1. copy the **xyz** example directory and rename it **elephant**. The files and directories needed are the `src` directory, including its contents, and the `Makefile`.
 1. change to the `elephant` directory.
 1. replace all occurences of `xyz` to `elephant` (preserving case) in the `Makefile` and all of the source files in `src`.
 1. in the `src` directory, rename `xyz.cpp` and `xyz.cpp` to `elephant.h` and `elephant.cpp` respectively.
